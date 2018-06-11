@@ -12,7 +12,7 @@ USER_AGENT = "Windows Mozilla"
 AFFILIATES = ["a8"]
 
 agent = Mechanize.new
-agent.user_agent = "Windows Mozilla"
+agent.user_agent = USER_AGENT
 
 # Prepare csv template
 CSV.open("data.csv", "w") do |csv|
