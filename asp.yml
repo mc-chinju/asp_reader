@@ -2,8 +2,8 @@ a8:
   login: https://www.a8.net
   data: https://pub.a8.net/a8v2/asResultReportAction.do
 felmat:
-  login:
-  data:
+  login: https://www.felmat.net/publisher/login
+  data: https://www.felmat.net/publisher/report
 access_trade:
   login:
   data:
