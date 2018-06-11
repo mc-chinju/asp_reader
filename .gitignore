@@ -51,4 +51,4 @@ build-iPhoneSimulator/
 
 # custom
 *.csv
-*.yml
+security.yml
