@@ -7,7 +7,7 @@ asp_info = YAML.load_file("asp.yml")
 security = YAML.load_file("security.yml")
 USER_AGENT = "Windows Mozilla"
 # AFFILIATES = ["a8", "felmat", "access_trade", "amazon_associate", "mosimo", "rentrax"]
-AFFILIATES = ["a8","felmat"]
+AFFILIATES = ["a8", "felmat", "access_trade"]
 
 agent = Mechanize.new
 agent.user_agent = USER_AGENT
@@ -73,12 +73,29 @@ AFFILIATES.each do |affiliate|
         target = _page.search("tbody")[0]
         latest_data = target.search("tr")[0]
         confirmed = action == "daily" ? "d" : "m"
-        instance_variable_set("@u#{confirmed}_count", latest_data.search("td")[4])
-        instance_variable_set("@u#{confirmed}_reward", latest_data.search("td")[5])
-        instance_variable_set("@d#{confirmed}_count", latest_data.search("td")[7])
-        instance_variable_set("@d#{confirmed}_reward", latest_data.search("td")[8])
+        instance_variable_set("@u#{confirmed}_count", latest_data.search("td")[4].text)
+        instance_variable_set("@u#{confirmed}_reward", latest_data.search("td")[5].text)
+        instance_variable_set("@d#{confirmed}_count", latest_data.search("td")[7].text)
+        instance_variable_set("@d#{confirmed}_reward", latest_data.search("td")[8].text)
       end
     when "access_trade"
+      form_action = "https://member.accesstrade.net/atv3/login.html"
+      form = page.form_with(action: form_action) do |f|
+        f.userId = login_id
+        f.userPass = password
+      end
+      form.submit
+
+      _page = agent.get(data_page)
+      target = _page.search(".report tbody tr")
+      @ud_count  = target[1].search("td")[0].text
+      @um_count  = target[1].search("td")[1].text
+      @ud_reward = target[2].search("td")[0].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, "")
+      @um_reward = target[2].search("td")[1].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, "")
+      @dd_count  = target[3].search("td")[0].text
+      @dm_count  = target[3].search("td")[1].text
+      @dd_reward = target[4].search("td")[0].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, "")
+      @dm_reward = target[4].search("td")[1].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, "")
     when "amazon_associate"
     when "mosimo"
     when "rentrax"

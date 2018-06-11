@@ -5,8 +5,8 @@ felmat:
   login: https://www.felmat.net/publisher/login
   data: https://www.felmat.net/publisher/report
 access_trade:
-  login:
-  data:
+  login: https://www.accesstrade.ne.jp
+  data: https://member.accesstrade.net/atv3/home.html
 amazon_associate:
   login:
   data:
