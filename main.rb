@@ -35,13 +35,33 @@ AFFILIATES.each do |affiliate|
       end
       form.submit
 
-      _page = agent.get(data_page)
-      table = _page.search(".reportTable1")
-      latest_data = table.search("tr")[1]
-      confirmed_count = latest_data.search("td")[1].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, "")
-      confirmed_reward = latest_data.search("td")[2].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, "")
+      actions = ["ud", "dd", "um", "dm"]
+      actions.each do |action|
+        latest_data_line = ["um", "dm"].include?(action) ? 1 : 2
+        search_target = (action == "dd") ? "table" : ".reportTable1"
+
+        count_line = 0
+        reward_line = 0
+        case action
+        when "ud"
+          count_line = 5
+          reward_line = 6
+        when "dd", "um"
+          count_line = 3
+          reward_line = 4
+        when "dm"
+          count_line = 1
+          reward_line = 2
+        end
+
+        _page = agent.get("#{data_page}?action=#{action}")
+        table = _page.search(search_target)
+        latest_data = table.search("tr")[latest_data_line]
+        instance_variable_set("@#{action}_count",  latest_data.search("td")[count_line].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, ""))
+        instance_variable_set("@#{action}_reward", latest_data.search("td")[reward_line].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, ""))
+      end
       CSV.open("data.csv", "a") do |csv|
-        csv << [affiliate, "-", "-", "-", "-", "-", "-", confirmed_count, confirmed_reward]
+        csv << [affiliate, @ud_count, @ud_reward, @dd_count, @dd_reward, @um_count, @um_reward, @dm_count, @dm_reward]
       end
     when "felmat"
     when "access_trade"

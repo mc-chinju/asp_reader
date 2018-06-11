@@ -1,6 +1,6 @@
 a8:
   login: https://www.a8.net
-  data: https://pub.a8.net/a8v2/asResultReportAction.do?action=dm
+  data: https://pub.a8.net/a8v2/asResultReportAction.do
 felmat:
   login:
   data:
