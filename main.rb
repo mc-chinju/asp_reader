@@ -7,7 +7,7 @@ asp_info = YAML.load_file("asp.yml")
 security = YAML.load_file("security.yml")
 USER_AGENT = "Windows Mozilla"
 # AFFILIATES = ["a8", "felmat", "access_trade", "amazon_associate", "mosimo", "rentrax"]
-AFFILIATES = ["a8", "felmat", "access_trade"]
+AFFILIATES = ["mosimo"]
 
 agent = Mechanize.new
 agent.user_agent = USER_AGENT
@@ -72,11 +72,11 @@ AFFILIATES.each do |affiliate|
         _page = agent.get("#{data_page}/#{action}")
         target = _page.search("tbody")[0]
         latest_data = target.search("tr")[0]
-        confirmed = action == "daily" ? "d" : "m"
-        instance_variable_set("@u#{confirmed}_count", latest_data.search("td")[4].text)
-        instance_variable_set("@u#{confirmed}_reward", latest_data.search("td")[5].text)
-        instance_variable_set("@d#{confirmed}_count", latest_data.search("td")[7].text)
-        instance_variable_set("@d#{confirmed}_reward", latest_data.search("td")[8].text)
+        term = action == "daily" ? "d" : "m"
+        instance_variable_set("@u#{term}_count", latest_data.search("td")[4].text)
+        instance_variable_set("@u#{term}_reward", latest_data.search("td")[5].text)
+        instance_variable_set("@d#{term}_count", latest_data.search("td")[7].text)
+        instance_variable_set("@d#{term}_reward", latest_data.search("td")[8].text)
       end
     when "access_trade"
       form_action = "https://member.accesstrade.net/atv3/login.html"
@@ -98,6 +98,22 @@ AFFILIATES.each do |affiliate|
       @dm_reward = target[4].search("td")[1].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, "")
     when "amazon_associate"
     when "mosimo"
+      form = page.form_with(id: "login-form") do |f|
+        f.account = login_id
+        f.password = password
+      end
+      form.submit
+
+      actions = ["daily", "monthly"]
+      actions.each do |action|
+        _page = agent.get("#{data_page}/#{action}")
+        target = _page.search(".payment-table tbody")[0].search("tr").last
+        term = action == "daily" ? "d" : "m"
+        instance_variable_set("@u#{term}_count", target.search("td")[3].search("p")[0].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, ""))
+        instance_variable_set("@u#{term}_reward", target.search("td")[3].search("p")[1].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, ""))
+        instance_variable_set("@d#{term}_count", target.search("td")[4].search("p")[0].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, ""))
+        instance_variable_set("@d#{term}_reward", target.search("td")[4].search("p")[1].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, ""))
+      end
     when "rentrax"
     when "presco"
     else

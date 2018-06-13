@@ -11,8 +11,8 @@ amazon_associate:
   login:
   data:
 mosimo:
-  login:
-  data:
+  login: https://af.moshimo.com/af/shop/login
+  data: https://af.moshimo.com/af/shop/report/payment
 rentrax:
   login:
   data:
