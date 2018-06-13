@@ -6,8 +6,8 @@ require "pry"
 asp_info = YAML.load_file("asp.yml")
 security = YAML.load_file("security.yml")
 USER_AGENT = "Windows Mozilla"
-# AFFILIATES = ["a8", "felmat", "access_trade", "amazon_associate", "mosimo", "rentrax"]
-AFFILIATES = ["mosimo"]
+# AFFILIATES = ["a8", "felmat", "access_trade", "amazon_associate", "mosimo", "rentracks", "presco"]
+AFFILIATES = ["rentracks"]
 
 agent = Mechanize.new
 agent.user_agent = USER_AGENT
@@ -114,7 +114,7 @@ AFFILIATES.each do |affiliate|
         instance_variable_set("@d#{term}_count", target.search("td")[4].search("p")[0].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, ""))
         instance_variable_set("@d#{term}_reward", target.search("td")[4].search("p")[1].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, ""))
       end
-    when "rentrax"
+    when "rentracks"
     when "presco"
     else
       raise "対応していません"

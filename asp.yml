@@ -13,7 +13,7 @@ amazon_associate:
 mosimo:
   login: https://af.moshimo.com/af/shop/login
   data: https://af.moshimo.com/af/shop/report/payment
-rentrax:
+rentracks:
   login:
   data:
 presco:
