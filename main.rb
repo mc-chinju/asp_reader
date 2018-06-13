@@ -6,8 +6,8 @@ require "pry"
 asp_info = YAML.load_file("asp.yml")
 security = YAML.load_file("security.yml")
 USER_AGENT = "Windows Mozilla"
-# AFFILIATES = ["a8", "felmat", "access_trade", "amazon_associate", "mosimo", "rentrax"]
-AFFILIATES = ["mosimo"]
+# AFFILIATES = ["a8", "felmat", "access_trade", "amazon_associate", "mosimo", "rentracks", "presco"]
+AFFILIATES = ["a8", "felmat", "access_trade", "mosimo", "rentracks", "presco"]
 
 agent = Mechanize.new
 agent.user_agent = USER_AGENT
@@ -114,7 +114,25 @@ AFFILIATES.each do |affiliate|
         instance_variable_set("@d#{term}_count", target.search("td")[4].search("p")[0].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, ""))
         instance_variable_set("@d#{term}_reward", target.search("td")[4].search("p")[1].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, ""))
       end
-    when "rentrax"
+    when "rentracks"
+      form_action = "https://manage.rentracks.jp/manage/login/login_manage_validation"
+      form = page.form_with(action: form_action) do |f|
+        f.idMailaddress = login_id
+        f.idLoginPassword = password
+      end
+      form.submit
+      _page = agent.get(data_page)
+      target = _page.search(".datatable tr")
+
+      actions = ["daily", "monthly"]
+      actions.each do |action|
+        term = action == "daily" ? "d" : "m"
+        instance_variable_set("@u#{term}_count", target[4].search("td")[3].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, ""))
+        instance_variable_set("@u#{term}_reward", target[4].search("td")[5].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, ""))
+        instance_variable_set("@d#{term}_count", target[7].search("td")[3].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, ""))
+        instance_variable_set("@d#{term}_reward", target[7].search("td")[5].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, ""))
+      end
+
     when "presco"
     else
       raise "対応していません"
