@@ -96,7 +96,6 @@ affiliates.each do |affiliate|
       @dm_count  = target[3].search("td")[1].text
       @dd_reward = target[4].search("td")[0].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, "")
       @dm_reward = target[4].search("td")[1].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, "")
-    when "amazon_associate"
     when "mosimo"
       form = page.form_with(id: "login-form") do |f|
         f.account = login_id
@@ -132,8 +131,6 @@ affiliates.each do |affiliate|
         instance_variable_set("@d#{term}_count", target[7].search("td")[3].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, ""))
         instance_variable_set("@d#{term}_reward", target[7].search("td")[5].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, ""))
       end
-
-    when "presco"
     else
       raise "対応していません"
     end

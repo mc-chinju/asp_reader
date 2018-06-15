@@ -7,15 +7,9 @@ felmat:
 access_trade:
   login: https://www.accesstrade.ne.jp
   data: https://member.accesstrade.net/atv3/home.html
-amazon_associate:
-  login:
-  data:
 mosimo:
   login: https://af.moshimo.com/af/shop/login
   data: https://af.moshimo.com/af/shop/report/payment
 rentracks:
   login: https://manage.rentracks.jp/manage/login
   data: https://manage.rentracks.jp/manage/top
-presco:
-  login:
-  data:
