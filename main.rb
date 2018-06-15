@@ -6,8 +6,8 @@ require "pry"
 asp_info = YAML.load_file("asp.yml")
 security = YAML.load_file("security.yml")
 USER_AGENT = "Windows Mozilla"
-# AFFILIATES = ["a8", "felmat", "access_trade", "amazon_associate", "mosimo", "rentracks", "presco"]
-AFFILIATES = ["a8", "felmat", "access_trade", "mosimo", "rentracks", "presco"]
+affiliates = []
+security.keys.each {|affiliate| affiliates << affiliate if security[affiliate]["id"]}
 
 agent = Mechanize.new
 agent.user_agent = USER_AGENT
@@ -17,7 +17,7 @@ CSV.open("data.csv", "w") do |csv|
   csv << ["アフィリエイトサイト", "本日発生件数", "本日発生報酬", "本日承認件数", "本日承認報酬", "当月発生件数", "当月発生報酬", "当月承認件数", "当月承認報酬"]
 end
 
-AFFILIATES.each do |affiliate|
+affiliates.each do |affiliate|
   login_page = asp_info[affiliate]["login"]
   data_page  = asp_info[affiliate]["data"]
 
@@ -96,7 +96,6 @@ AFFILIATES.each do |affiliate|
       @dm_count  = target[3].search("td")[1].text
       @dd_reward = target[4].search("td")[0].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, "")
       @dm_reward = target[4].search("td")[1].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, "")
-    when "amazon_associate"
     when "mosimo"
       form = page.form_with(id: "login-form") do |f|
         f.account = login_id
@@ -132,8 +131,6 @@ AFFILIATES.each do |affiliate|
         instance_variable_set("@d#{term}_count", target[7].search("td")[3].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, ""))
         instance_variable_set("@d#{term}_reward", target[7].search("td")[5].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, ""))
       end
-
-    when "presco"
     else
       raise "対応していません"
     end
