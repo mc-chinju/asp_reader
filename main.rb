@@ -24,6 +24,8 @@ affiliates.each do |affiliate|
   login_id = security[affiliate]["id"]
   password = security[affiliate]["password"]
 
+  puts "#{affiliate} のデータ検索を開始します。"
+
   agent.get(login_page) do |page|
     case affiliate
     when "a8"
@@ -135,8 +137,12 @@ affiliates.each do |affiliate|
       raise "対応していません"
     end
 
+    puts "#{affiliate} のデータ検索を終了しました"
+
     CSV.open("data.csv", "a") do |csv|
       csv << [affiliate, @ud_count, @ud_reward, @dd_count, @dd_reward, @um_count, @um_reward, @dm_count, @dm_reward]
     end
   end
 end
+
+puts "すべての出力が完了しました！ data.csv をご確認ください！"
