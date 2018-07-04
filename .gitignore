@@ -52,3 +52,4 @@ build-iPhoneSimulator/
 # custom
 *.csv
 security.yml
+line_notify.yml
