@@ -1,11 +1,12 @@
 require "mechanize"
 require "csv"
+require "line_notify"
 require "pry"
 
 # Settings
 asp_info = YAML.load_file("asp.yml")
 security = YAML.load_file("security.yml")
-line_notify = YAML.load_file("line_notify.yml")
+LINE_TOKEN = YAML.load_file("line_notify.yml")["token"]
 USER_AGENT = "Windows Mozilla"
 affiliates = []
 security.keys.each {|affiliate| affiliates << affiliate if security[affiliate]["id"]}
@@ -140,11 +141,21 @@ affiliates.each do |affiliate|
 
     puts "#{affiliate} のデータ検索を終了しました"
 
+    unless LINE_TOKEN.nil?
+      @notifies ||= "本日の発生報酬\n"
+      @notifies << "#{affiliate.upcase}: ¥#{@ud_reward}\n"
+    end
 
     CSV.open("data.csv", "a") do |csv|
       csv << [affiliate, @ud_count, @ud_reward, @dd_count, @dd_reward, @um_count, @um_reward, @dm_count, @dm_reward]
     end
   end
+end
+
+unless LINE_TOKEN.nil?
+  line_notify = LineNotify.new(LINE_TOKEN)
+  options = { message: @notifies }
+  line_notify.send(options)
 end
 
 puts "すべての出力が完了しました！ data.csv をご確認ください！"
