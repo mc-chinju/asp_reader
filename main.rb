@@ -23,25 +23,8 @@ affiliates.each do |asp|
 
   puts "#{asp} のデータ検索を開始します。"
 
-  case asp
-  when "a8"
-    client = AspScraper::Asp::A8.new(id: login_id, password: password)
-    results = client.search
-  when "felmat"
-    client = AspScraper::Asp::Felmat.new(id: login_id, password: password)
-    results = client.search
-  when "access_trade"
-    client = AspScraper::Asp::AccessTrade.new(id: login_id, password: password)
-    results = client.search
-  when "mosimo"
-    client = AspScraper::Asp::Mosimo.new(id: login_id, password: password)
-    results = client.search
-  when "rentracks"
-    client = AspScraper::Asp::Rentracks.new(id: login_id, password: password)
-    results = client.search
-  else
-    raise "Incompatible ASP!"
-  end
+  client = Object.const_get("AspScraper::Asp::#{asp.camelize}").new(id: login_id, password: password)
+  results = client.search
 
   puts "#{asp} のデータ検索を終了しました。"
 
