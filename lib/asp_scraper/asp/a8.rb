@@ -1,6 +1,6 @@
 class AspScraper::Asp::A8 < AspScraper::Asp::Base
   def search
-    agent.get(@login_page) do |page|
+    @agent.get(@login_url) do |page|
       form = page.form_with(name: "asLogin") do |f|
         f.login = @id
         f.passwd = @password
@@ -28,12 +28,15 @@ class AspScraper::Asp::A8 < AspScraper::Asp::Base
           reward_line = 2
         end
 
-        _page = agent.get("#{@data_page}?action=#{action}")
+        _page = @agent.get("#{@data_url}?action=#{action}")
         target = _page.search(search_target)
         latest_data = target.search("tr")[latest_data_line]
+
         instance_variable_set("@#{action}_count",  latest_data.search("td")[count_line].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, ""))
         instance_variable_set("@#{action}_reward", latest_data.search("td")[reward_line].text.gsub(/\r\n|\r|\n|\s|\t/, "").gsub(/[^\d]/, ""))
       end
     end
+
+    return @ud_count, @ud_reward, @dd_count, @dd_reward, @um_count, @um_reward, @dm_count, @dm_reward
   end
 end
