@@ -15,7 +15,7 @@ module AspScraper::Asp
     private
 
       def read_urls_from_yml
-        yml = Yaml.file_load("../asp.yml")
+        yml = YAML.load_file("asp.yml")
         asp_name = self.class.to_s.split("::")[-1].downcase
         yml[asp_name]
       rescue
