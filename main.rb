@@ -10,14 +10,14 @@ ActiveSupport::Dependencies.autoload_paths << "./lib"
 # Settings
 security = YAML.load_file("security.yml")
 LINE_TOKEN = YAML.load_file("line_notify.yml")["token"]
-affiliates = security.keys.select { |asp| security[asp]["id"] }
+asps = security.keys.select { |asp| security[asp]["id"] }
 
 # Prepare csv template
 CSV.open("data.csv", "w") do |csv|
   csv << ["アフィリエイトサイト", "本日発生件数", "本日発生報酬", "本日承認件数", "本日承認報酬", "当月発生件数", "当月発生報酬", "当月承認件数", "当月承認報酬"]
 end
 
-affiliates.each do |asp|
+asps.each do |asp|
   login_id = security[asp]["id"]
   password = security[asp]["password"]
 
@@ -37,7 +37,7 @@ affiliates.each do |asp|
 
   unless LINE_TOKEN.nil?
     @notifies ||= "本日の発生報酬\n"
-    @notifies << "#{affiliate.camelize}: ¥#{@ud_reward}\n"
+    @notifies << "#{asp.camelize}: ¥#{@ud_reward}\n"
   end
 end
 
